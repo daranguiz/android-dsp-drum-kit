@@ -16,6 +16,7 @@ import java.io.FileWriter;
 /* http://stackoverflow.com/questions/18759849/how-to-write-a-class-to-read-the-sensor-value-in-android */
 public class SensorReader implements SensorEventListener {
 
+    // TODO: What gesture corresponds to what sound?
     private final int[] soundIndex = {
             R.raw.clap_analog,
             R.raw.crash_acoustic,
