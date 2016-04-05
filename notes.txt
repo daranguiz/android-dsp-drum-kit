@@ -10,3 +10,4 @@ Files with TODO flags:
 - Android:
     * GestureRecognizer
     * FirFilter
+    * SensorReader

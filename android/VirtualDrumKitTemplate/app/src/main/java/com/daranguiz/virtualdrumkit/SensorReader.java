@@ -28,7 +28,7 @@ public class SensorReader implements SensorEventListener {
     };
 
     private final long SEC_TO_MS = 1000;
-    private final long RESAMPLE_PERIOD_IN_MS = Math.round(SEC_TO_MS * 0.04f);
+    private final long RESAMPLE_PERIOD_IN_MS = Math.round(SEC_TO_MS * 0.04f); // TODO - Set according to your device bandwidth
 
     private final Context mContext;
     private final String csvFilename = "sensor_data.csv";
