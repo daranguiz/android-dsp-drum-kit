@@ -30,7 +30,7 @@ public class SensorReader implements SensorEventListener {
         mContext = context;
 
         mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
     }
 
@@ -50,6 +50,9 @@ public class SensorReader implements SensorEventListener {
         }
 
         writeToCsv(event);
+
+        /* Magic time */
+
     }
 
     @Override
