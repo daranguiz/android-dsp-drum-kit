@@ -4,4 +4,9 @@ Workshop notes:
     * Only collect one channel
     * matlab/python - get approximate sampling rate
 - Download a file explorer app
+- using LINEAR_ACCELERATION instead of pure ACCELERATION, why?
 
+Files with TODO flags:
+- Android:
+    * GestureRecognizer
+    * FirFilter

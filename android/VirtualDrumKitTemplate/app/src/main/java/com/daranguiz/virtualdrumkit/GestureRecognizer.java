@@ -6,9 +6,9 @@ public class GestureRecognizer {
 
     /* Parameters */
     private final long SEC_TO_MS = 1000;
-    private final float[] accelThresholds = {8f, 8f, 8f};
-    private final float[] gyroThresholds = {4f, 4f, 4f};
-    private final long minTimeBetweenGestures = Math.round(SEC_TO_MS * 0.4);
+    private final float[] accelThresholds = {100f, 100f, 100f};               // TODO
+    private final float[] gyroThresholds = {100f, 100f, 100f};                // TODO
+    private final long minTimeBetweenGestures = Math.round(SEC_TO_MS * 0.0);  // TODO
 
     /* State variables */
     private long timeSinceLastGesture;
@@ -43,44 +43,24 @@ public class GestureRecognizer {
             return -1;
         }
 
-        /* First find max (by magnitude) of each sensor */
-        float maxAccel = accel[0];
+
+        float maxAccel = 0;
         int maxAccelIdx = 0;
-        float maxGyro = gyro[0];
+        float maxGyro = 0;
         int maxGyroIdx = 0;
 
+        /* First, find the largest magnitude value on accelerometer and on gyroscope
+         * NOTE: Math.abs() may be useful
+         */
         for (int i = 1; i < 3; i++) {
-            if (Math.abs(accel[i]) > Math.abs(maxAccel)) {
-                maxAccel = accel[i];
-                maxAccelIdx = i;
-            }
-            if (Math.abs(gyro[i]) > Math.abs(maxGyro)) {
-                maxGyro = gyro[i];
-                maxGyroIdx = i;
-            }
+            // TODO
         }
 
         int accelOffset = 0;
         int gyroOffset = 6;
 
-        /* Then check thresholds */
-        if (Math.abs(maxAccel) > accelThresholds[maxAccelIdx]) {
-            timeSinceLastGesture = 0;
-            if (maxAccel < 0) {
-                return accelOffset + 2 * maxAccelIdx;
-            } else {
-                return accelOffset + 2 * maxAccelIdx + 1;
-            }
-        }
-
-        if (Math.abs(maxGyro) > gyroThresholds[maxGyroIdx]) {
-            timeSinceLastGesture = 0;
-            if (maxGyro < 0) {
-                return gyroOffset + 2 * maxAccelIdx;
-            } else {
-                return gyroOffset + 2 * maxAccelIdx + 1;
-            }
-        }
+        /* Then compare to known thresholds */
+        // TODO
 
         return -1;
     }

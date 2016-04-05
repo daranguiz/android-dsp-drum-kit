@@ -132,10 +132,10 @@ public class SensorReader implements SensorEventListener {
         int gesture = mGestureRecognizer.recognize(lastAccelData, lastGyroData, System.currentTimeMillis());
 
         if (gesture != -1) {
-            Toast toast = Toast.makeText(mContext, "Gesture recognized: " + Integer.toString(gesture), Toast.LENGTH_SHORT);
-            toast.show();
+            String sGesture = "Gesture recognized: " + Integer.toString(gesture);
+            VirtualDrumKit.textStatus.setText(sGesture);
 
-            Log.d("GESTURE", "Gesture recognized: " + Integer.toString(gesture));
+            Log.d("GESTURE", sGesture);
 
             if (gesture < soundIndex.length) {
                 MediaPlayer mediaPlayer = MediaPlayer.create(mContext, soundIndex[gesture]);

@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 public class VirtualDrumKit extends AppCompatActivity {
 
-    public TextView textStatus;
+    public static TextView textStatus;
     private Button buttonStart;
     private Button buttonStop;
 

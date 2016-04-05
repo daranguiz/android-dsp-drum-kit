@@ -6,7 +6,7 @@ import java.util.Vector;
 public class FirFilter {
 
     /* Filter coefficients */
-    private static final float[] coefs = {1f, 0f, 0f};
+    private static final float[] coefs = {1f, 0f, 0f}; // TODO
     private static final int NUM_TAPS = coefs.length;
 
     /* State variables */
@@ -28,9 +28,7 @@ public class FirFilter {
 
         /* Filter */
         float filteredVal = 0;
-        for (int i = 0; i < NUM_TAPS; i++) {
-            filteredVal += coefs[i] * pastVals.get(i);
-        }
+        // TODO
 
         return filteredVal;
     }
