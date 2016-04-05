@@ -4,7 +4,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-csvfilename = '../matlab/sample_sensor_data.csv'
+csvfilename = '../sample_sensor_data.csv'
 axis_names = ['X', 'Y', 'Z']
 
 # Rows:
@@ -37,7 +37,6 @@ fig.tight_layout()
 fig.subplots_adjust(top=0.88)
 fig.suptitle('Gyroscope Data', size=16)
 for i in range(3):
-    print(4+i)
     axarr[i].plot(timestamps, data[4 + i])
     axarr[i].set_title('Gyroscope : {}'.format(axis_names[i]))
 
