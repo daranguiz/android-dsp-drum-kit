@@ -52,7 +52,9 @@ public class SensorReader implements SensorEventListener {
         writeToCsv(event);
 
         /* Magic time */
-
+        // resample
+        // filter
+        // recognize
     }
 
     @Override
