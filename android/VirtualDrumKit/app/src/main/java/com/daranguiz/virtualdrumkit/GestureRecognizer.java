@@ -1,19 +1,23 @@
 package com.daranguiz.virtualdrumkit;
 
+import android.util.Log;
+
 public class GestureRecognizer {
 
     /* Parameters */
-    private final float[] accelThresholds = {4f, 4f, 4f};
+    private final long SEC_TO_MS = 1000;
+    private final float[] accelThresholds = {8f, 8f, 8f};
     private final float[] gyroThresholds = {4f, 4f, 4f};
-    private final long minSamplesBetweenGestures = 10;
+    private final long minTimeBetweenGestures = Math.round(SEC_TO_MS * 0.4);
 
     /* State variables */
-    private long samplesSinceLastGesture;
+    private long timeSinceLastGesture;
+    private long lastTimestamp;
 
     public GestureRecognizer() {
-        samplesSinceLastGesture = minSamplesBetweenGestures + 1;
+        timeSinceLastGesture = minTimeBetweenGestures + 1;
+        lastTimestamp = 0;
     }
-
 
     /**
      * -1 = No gesture
@@ -30,36 +34,51 @@ public class GestureRecognizer {
      * 10 = Gyro Z neg
      * 11 = Gyro Z pos
      */
-    public int recognize(float[] accel, float[] gyro) {
-        samplesSinceLastGesture += 1;
+    public int recognize(float[] accel, float[] gyro, long timestamp) {
+        long delta = timestamp - lastTimestamp;
+        lastTimestamp = timestamp;
+        timeSinceLastGesture += delta;
 
-        if (samplesSinceLastGesture < minSamplesBetweenGestures) {
+        if (timeSinceLastGesture < minTimeBetweenGestures) {
             return -1;
+        }
+
+        /* First find max (by magnitude) of each sensor */
+        float maxAccel = accel[0];
+        int maxAccelIdx = 0;
+        float maxGyro = gyro[0];
+        int maxGyroIdx = 0;
+
+        for (int i = 1; i < 3; i++) {
+            if (Math.abs(accel[i]) > Math.abs(maxAccel)) {
+                maxAccel = accel[i];
+                maxAccelIdx = i;
+            }
+            if (Math.abs(gyro[i]) > Math.abs(maxGyro)) {
+                maxGyro = gyro[i];
+                maxGyroIdx = i;
+            }
         }
 
         int accelOffset = 0;
         int gyroOffset = 6;
-        int gesturesPerDof = 6;
 
-        /* First accel */
-        for (int i = 0; i < gesturesPerDof; i++ ) {
-            if (accel[i] < -1 * accelThresholds[i]) {
-                samplesSinceLastGesture = 0;
-                return accelOffset + 2 * i;
-            } else if (accel[i] > accelThresholds[i]) {
-                samplesSinceLastGesture = 0;
-                return accelOffset + 2 * i + 1;
+        /* Then check thresholds */
+        if (Math.abs(maxAccel) > accelThresholds[maxAccelIdx]) {
+            timeSinceLastGesture = 0;
+            if (maxAccel < 0) {
+                return accelOffset + 2 * maxAccelIdx;
+            } else {
+                return accelOffset + 2 * maxAccelIdx + 1;
             }
         }
 
-        /* Then gyro */
-        for (int i = 0; i < gesturesPerDof; i++ ) {
-            if (gyro[i] < -1 * gyroThresholds[i]) {
-                samplesSinceLastGesture = 0;
-                return gyroOffset + 2 * i;
-            } else if (gyro[i] > gyroThresholds[i]) {
-                samplesSinceLastGesture = 0;
-                return gyroOffset + 2 * i + 1;
+        if (Math.abs(maxGyro) > gyroThresholds[maxGyroIdx]) {
+            timeSinceLastGesture = 0;
+            if (maxGyro < 0) {
+                return gyroOffset + 2 * maxAccelIdx;
+            } else {
+                return gyroOffset + 2 * maxAccelIdx + 1;
             }
         }
 

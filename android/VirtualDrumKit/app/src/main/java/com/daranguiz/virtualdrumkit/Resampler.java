@@ -1,12 +1,12 @@
 package com.daranguiz.virtualdrumkit;
 
 public class Resampler {
-    private long samplingDeltaNs;
+    private long samplingDeltaMs;
     private float[] lastSensorValue;
     private long lastTimestamp;
 
-    public Resampler(long inputSamplingDeltaNs) {
-        samplingDeltaNs = inputSamplingDeltaNs;
+    public Resampler(long inputSamplingDeltaMs) {
+        samplingDeltaMs = inputSamplingDeltaMs;
         lastSensorValue = new float[] {0f, 0f, 0f};
         lastTimestamp = -1;
     }
@@ -14,7 +14,7 @@ public class Resampler {
     public float[] resample(float[] curSensorValue, long curTimestamp) {
         float[] retVal = {0f, 0f, 0f};
 
-        long nextSampleTime = lastTimestamp + samplingDeltaNs;
+        long nextSampleTime = lastTimestamp + samplingDeltaMs;
 
         /* First sample is wonky, avoid altogether */
         if (lastTimestamp > 0) {
