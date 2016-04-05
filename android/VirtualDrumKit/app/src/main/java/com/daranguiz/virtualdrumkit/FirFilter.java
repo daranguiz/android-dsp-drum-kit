@@ -6,7 +6,7 @@ import java.util.Vector;
 public class FirFilter {
 
     /* Filter coefficients */
-    private static final float[] coefs = {0f, 0.5f, 0.75f};
+    private static final float[] coefs = {1f, 0f, 0f};
     private static final int NUM_TAPS = coefs.length;
 
     /* State variables */

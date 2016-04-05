@@ -15,8 +15,8 @@ import java.io.FileWriter;
 /* http://stackoverflow.com/questions/18759849/how-to-write-a-class-to-read-the-sensor-value-in-android */
 public class SensorReader implements SensorEventListener {
 
-    private final long SEC_TO_NS = 1000000000;
-    private final long RESAMPLE_PERIOD_IN_NS = Math.round(SEC_TO_NS * 0.04f);
+    private final long SEC_TO_MS = 1000;
+    private final long RESAMPLE_PERIOD_IN_MS = Math.round(SEC_TO_MS * 0.04f);
 
     private final Context mContext;
     private final String csvFilename = "sensor_data.csv";
@@ -27,8 +27,10 @@ public class SensorReader implements SensorEventListener {
     private final Sensor mGyroscope;
 
     private GestureRecognizer mGestureRecognizer;
-    private Resampler mResampler;
-    private FirFilter mFilter;
+    private Resampler mAccelResampler;
+    private Resampler mGyroResampler;
+    private FirFilter[] mAccelFilter;
+    private FirFilter[] mGyroFilter;
 
     private float[] lastAccelData = {0f, 0f, 0f};
     private float[] lastGyroData = {0f, 0f, 0f};
@@ -41,38 +43,14 @@ public class SensorReader implements SensorEventListener {
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         mGestureRecognizer = new GestureRecognizer();
-        mResampler = new Resampler(RESAMPLE_PERIOD_IN_NS);
-        mFilter = new FirFilter();
-    }
+        mAccelResampler = new Resampler(RESAMPLE_PERIOD_IN_MS);
+        mGyroResampler = new Resampler(RESAMPLE_PERIOD_IN_MS);
+        mAccelFilter = new FirFilter[3];
+        mGyroFilter = new FirFilter[3];
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION)
-        {
-            lastAccelData[0] = event.values[0];
-            lastAccelData[1] = event.values[1];
-            lastAccelData[2] = event.values[2];
-        }
-        else if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE)
-        {
-            lastGyroData[0] = event.values[0];
-            lastGyroData[1] = event.values[1];
-            lastGyroData[2] = event.values[2];
-        }
-
-        writeToCsv(event);
-
-        /* Magic time */
-        // resample
-        // filter
-        // recognize
-        int gesture = mGestureRecognizer.recognize(lastAccelData, lastGyroData, System.currentTimeMillis());
-
-        if (gesture != -1) {
-            Toast toast = Toast.makeText(mContext, "Gesture recognized: " + Integer.toString(gesture), Toast.LENGTH_SHORT);
-            toast.show();
-
-            Log.d("GESTURE", "Gesture recognized: " + Integer.toString(gesture));
+        for (int i = 0; i < 3; i++) {
+            mAccelFilter[i] = new FirFilter();
+            mGyroFilter[i] = new FirFilter();
         }
     }
 
@@ -113,6 +91,40 @@ public class SensorReader implements SensorEventListener {
 
     public void unregister() {
         mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        long timestamp = System.currentTimeMillis();
+
+        if (event.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION)
+        {
+            lastAccelData = mAccelResampler.resample(event.values, timestamp);
+
+            for (int i = 0; i < 3; i++) {
+                lastAccelData[i] = mAccelFilter[i].filter(lastAccelData[i]);
+            }
+        }
+        else if (event.sensor.getType() == Sensor.TYPE_GYROSCOPE)
+        {
+            lastGyroData = mGyroResampler.resample(event.values, timestamp);
+
+            for (int i = 0; i < 3; i++) {
+                lastGyroData[i] = mGyroFilter[i].filter(lastGyroData[i]);
+            }
+        }
+
+        writeToCsv(event);
+
+        /* Recognize */
+        int gesture = mGestureRecognizer.recognize(lastAccelData, lastGyroData, System.currentTimeMillis());
+
+        if (gesture != -1) {
+            Toast toast = Toast.makeText(mContext, "Gesture recognized: " + Integer.toString(gesture), Toast.LENGTH_SHORT);
+            toast.show();
+
+            Log.d("GESTURE", "Gesture recognized: " + Integer.toString(gesture));
+        }
     }
 
     private void writeToCsv(SensorEvent event) {
