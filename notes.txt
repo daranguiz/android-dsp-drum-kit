@@ -11,3 +11,37 @@ Files with TODO flags:
     * GestureRecognizer
     * FirFilter
     * SensorReader
+
+
+Rough outline:
+- assemble into groups
+- talk about how android sensor collection works
+    * Using LINEAR_ACCELERATION instead of pure ACCELERATION, why?
+- run CSV app, collect some sample data (comment out gyro)
+- figure out approximate device sampling rate
+- visualize raw CSV data in matlab (no resampling)
+- Resampling
+    * What is resampling?
+    * Why do we need to do it?
+    * What are a few different kinds of resampling? (ZOH, linear, etc)
+    * GROUP ALGO: Write me a resampler
+- Filtering
+    * What is filtering?
+    * Why do we need to do it?
+    * (NOTE: Nyquist? Does that apply here?)
+    * What does a filter look like (FIR block diagram)
+    * GROUP ALGO: How do you do manual filtering in code given streaming data?
+- Filter Design
+    * How do you spec a filter?
+    * How do you choose what filter type to use?
+    * DEMO: trying multiple tap lengths
+- Gesture recognition
+    * Couple different ways to do gesture recognition:
+        > ML style
+        > DTW
+    * Our way: thresholding
+    * GROUP ALGO: What would this thresholding algorithm look like?
+- Back to android:
+    * Fill in all the TODO's back in the android code
+        > This namely involves parameters, a few algorithm things
+    * How did you do?
