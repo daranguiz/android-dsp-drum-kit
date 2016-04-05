@@ -1,7 +1,7 @@
 %% CSV Parser
 % Dario Aranguiz
 
-csvFile = 'sample_sensor_data.csv';
+csvFile = '../../sample_sensor_data.csv';
 axis_names = ['X', 'Y', 'Z'];
 
 % Rows: 
@@ -60,12 +60,13 @@ for i=1:3
 end
 xlabel('Time in seconds');
 
-accelFiltered = filter(b, 1, accelResampled);
+%% Apply filter
 
+accelFiltered = filter(b, 1, accelResampled);
 
 figure;
 for i=1:3
-    subplot(3,1,i), plot(accelFilt, accelResampled(:, i));
+    subplot(3,1,i), plot(accelTime, accelFiltered(:, i));
     title(strcat('Accel Filtered ', axis_names(i)));
 end
 xlabel('Time in seconds');

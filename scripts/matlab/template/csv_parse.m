@@ -1,7 +1,7 @@
 %% CSV Parser
 % Dario Aranguiz
 
-csvFile = 'sample_sensor_data.csv';
+csvFile = '../../sample_sensor_data.csv';
 axis_names = ['X', 'Y', 'Z'];
 
 % Rows: 
@@ -40,17 +40,18 @@ xlabel('Time in seconds');
 
 %% Generate filter
 
-Fs = 100;           % Sampling Rate
-Fc = 12;           % Cutoff Frequency
-transBand = 10;     % Width of transition band
-n = 10;            % Number of taps 
+% TODO: Select appropriate filter parameters 
+
+Fs = 1000;           % Sampling Rate
+Fc = 1000;           % Cutoff Frequency
+transBand = 0;       % Width of transition band
+n = 100;             % Number of taps 
 
 b = filter_gen(Fs, Fc, transBand, n);
 
 %% Resample
 
 % http://www.mathworks.com/help/signal/ref/resample.html
-Fs = 100;
 [accelResampled, accelTime] = resample(accel, timestamps, Fs);
 
 figure;
@@ -59,6 +60,8 @@ for i=1:3
     title(strcat('Accel Resampled ', axis_names(i)));
 end
 xlabel('Time in seconds');
+
+% TODO: Resample gyroscope
 
 %% Apply filter
 
@@ -70,3 +73,5 @@ for i=1:3
     title(strcat('Accel Filtered ', axis_names(i)));
 end
 xlabel('Time in seconds');
+
+% TODO: Filter accelerometer
