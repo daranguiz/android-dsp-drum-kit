@@ -1,0 +1,7 @@
+Workshop notes:
+
+- Figure out your phone's approximate sampling rate:
+    * Only collect one channel
+    * matlab/python - get approximate sampling rate
+- Download a file explorer app
+
