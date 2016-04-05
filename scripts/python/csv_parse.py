@@ -49,7 +49,7 @@ plt.savefig('gyro_data.png')
 # Generate filter
 
 
-def filter_gen(Fs=25, Fc=12, transBand=4, numtaps=10):
+def filter_gen(Fs, Fc, transBand, numtaps):
     """ Generate a filter, with the given parameters. """
     import scipy.signal as ssig
 
@@ -83,10 +83,10 @@ def view_filter(b):
     plt.savefig('designed_filter.png')
 
 
-Fs = 100        # Sampling Rate
-Fc = 12         # Cutoff Frequency
-transBand = 10  # Width of transition band
-numtaps = 10    # Number of taps
+Fs = 1           # Sampling Rate
+Fc = 0.5         # Cutoff Frequency
+transBand = 0.1  # Width of transition band
+numtaps = 1000   # Number of taps
 
 b = filter_gen(Fs, Fc, transBand, numtaps)
 view_filter(b)
