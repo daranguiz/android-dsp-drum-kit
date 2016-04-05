@@ -5,6 +5,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.media.MediaPlayer;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -14,6 +15,17 @@ import java.io.FileWriter;
 
 /* http://stackoverflow.com/questions/18759849/how-to-write-a-class-to-read-the-sensor-value-in-android */
 public class SensorReader implements SensorEventListener {
+
+    private final int[] soundIndex = {
+            R.raw.clap_analog,
+            R.raw.crash_acoustic,
+            R.raw.hihat_acoustic01,
+            R.raw.kick_acoustic01,
+            R.raw.openhat_acoustic01,
+            R.raw.shaker_analog,
+            R.raw.snare_acoustic01,
+            R.raw.tom_acoustic01
+    };
 
     private final long SEC_TO_MS = 1000;
     private final long RESAMPLE_PERIOD_IN_MS = Math.round(SEC_TO_MS * 0.04f);
@@ -124,6 +136,11 @@ public class SensorReader implements SensorEventListener {
             toast.show();
 
             Log.d("GESTURE", "Gesture recognized: " + Integer.toString(gesture));
+
+            if (gesture < soundIndex.length) {
+                MediaPlayer mediaPlayer = MediaPlayer.create(mContext, soundIndex[gesture]);
+                mediaPlayer.start();
+            }
         }
     }
 
