@@ -6,9 +6,9 @@ public class GestureRecognizer {
 
     /* Parameters */
     private final long SEC_TO_MS = 1000;
-    private final float[] accelThresholds = {100f, 100f, 100f};               // TODO
-    private final float[] gyroThresholds = {100f, 100f, 100f};                // TODO
-    private final long minTimeBetweenGestures = Math.round(SEC_TO_MS * 0.0);  // TODO
+    private final float[] accelThresholds = {8f, 8f, 8f};               // TODO
+    private final float[] gyroThresholds = {4f, 4f, 4f};                // TODO
+    private final long minTimeBetweenGestures = Math.round(SEC_TO_MS * 0.2);  // TODO
 
     /* State variables */
     private long timeSinceLastGesture;

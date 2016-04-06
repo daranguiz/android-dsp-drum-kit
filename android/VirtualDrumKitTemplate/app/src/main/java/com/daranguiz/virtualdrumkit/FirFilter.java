@@ -30,6 +30,8 @@ public class FirFilter {
         float filteredVal = 0;
         // TODO
 
+        // pastVals.get(0) == get most recent value
+
         return filteredVal;
     }
 

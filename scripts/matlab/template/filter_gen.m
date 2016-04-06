@@ -25,9 +25,9 @@ function b = filter_gen(Fs, Fc, transBand, n)
     title('Frequency Response');
 
     % String construction
-    javaString = '\nprivate final float[] coefs = {';
+    javaString = '\nprivate static final float[] coefs = {';
     for i=1:n
-        javaString = strcat(javaString, num2str(b(i)), ', ');
+        javaString = strcat(javaString, num2str(b(i)), 'f, '); 
     end
     javaString(end-1:end) = '};';
     javaString = strcat(javaString, '\n');

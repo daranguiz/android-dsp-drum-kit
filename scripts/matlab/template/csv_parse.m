@@ -43,8 +43,8 @@ xlabel('Time in seconds');
 % TODO: Select appropriate filter parameters 
 
 Fs = 1000;           % Sampling Rate
-Fc = 1000;           % Cutoff Frequency
-transBand = 0;       % Width of transition band
+Fc = 500;           % Cutoff Frequency
+transBand = 50;       % Width of transition band
 n = 100;             % Number of taps 
 
 b = filter_gen(Fs, Fc, transBand, n);
