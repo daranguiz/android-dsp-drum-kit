@@ -1,7 +1,7 @@
 %% CSV Parser
 % Dario Aranguiz
 
-csvFile = '../../sample_sensor_data.csv';
+csvFile = 'C:\Users\daran\Dropbox\Petronics\sensor_data_dario_house.csv';
 axis_names = ['X', 'Y', 'Z'];
 
 % Rows: 
@@ -12,10 +12,14 @@ axis_names = ['X', 'Y', 'Z'];
 % 5 - Gyro X
 % 6 - Gyro Y
 % 7 - Gyro Z
+% 8 - Orientation X
+% 9 - Orientation Y
+% 10 - Orientation Z
 csv = csvread(csvFile);
 
 accel = csv(:, 2:4);
 gyro = csv(:, 5:7);
+orien = mod(180 + csv(:, end-3:end-1), 360);
 
 % Normalize timestamps
 timestamps = csv(:, 1) - csv(1,1);
@@ -35,6 +39,14 @@ title('Gyroscope Readings');
 for i=1:3
     subplot(3,1,i), plot(timestamps, gyro(:, i));
     title(strcat('Gyro ', axis_names(i)));
+end
+xlabel('Time in seconds');
+
+figure;
+title('Orientation Readings');
+for i=1:3
+    subplot(3,1,i), plot(timestamps, orien(:, i));
+    title(strcat('Orientation ', axis_names(i)));
 end
 xlabel('Time in seconds');
 

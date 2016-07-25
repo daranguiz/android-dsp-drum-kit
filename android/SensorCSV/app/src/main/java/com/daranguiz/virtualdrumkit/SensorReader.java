@@ -16,22 +16,28 @@ import java.io.FileWriter;
 public class SensorReader implements SensorEventListener {
 
     private final Context mContext;
-    private final String csvFilename = "sensor_data.csv";
+    private final String csvFilenameBase = "sensor_data";
     private FileWriter writer;
 
     private final SensorManager mSensorManager;
     private final Sensor mAccelerometer;
     private final Sensor mGyroscope;
+    private final Sensor mMag;
+    private final Sensor mOrientation;
 
     private float[] lastAccelData = {0f, 0f, 0f};
     private float[] lastGyroData = {0f, 0f, 0f};
+    private float[] lastOrientationData = {0f, 0f, 0f};
+    private float[] lastMagData = {0f, 0f, 0f, 0f, 0f, 0f};
 
     public SensorReader(Context context) {
         mContext = context;
 
         mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+        mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        mMag = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED);
+        mOrientation = mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION);
     }
 
     @Override
@@ -48,6 +54,22 @@ public class SensorReader implements SensorEventListener {
             lastGyroData[1] = event.values[1];
             lastGyroData[2] = event.values[2];
         }
+        else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED)
+        {
+            lastMagData[0] = event.values[0];
+            lastMagData[1] = event.values[1];
+            lastMagData[2] = event.values[2];
+            lastMagData[3] = event.values[3];
+            lastMagData[4] = event.values[4];
+            lastMagData[5] = event.values[5];
+        }
+        else if (event.sensor.getType() == Sensor.TYPE_ORIENTATION)
+        {
+            ((VirtualDrumKit) mContext).textStatus.setText(Float.toString(event.values[0]));
+            lastOrientationData[0] = event.values[0];
+            lastOrientationData[1] = event.values[1];
+            lastOrientationData[2] = event.values[2];
+        }
 
         writeToCsv(event);
     }
@@ -59,7 +81,14 @@ public class SensorReader implements SensorEventListener {
 
     public boolean startCollection() {
         try {
-            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+            String csvFilename = csvFilenameBase + "_" + Long.toString(System.currentTimeMillis() / 1000L) + ".csv";
+            File pathBase = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+            File path = new File(pathBase.toString() + "/SensorData");
+            if(!path.exists())
+            {
+                path.mkdir();
+            }
+
             File file = new File(path, csvFilename);
             file.createNewFile();
             writer = new FileWriter(file);
@@ -85,6 +114,8 @@ public class SensorReader implements SensorEventListener {
     public void register() {
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_FASTEST);
         mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mMag, SensorManager.SENSOR_DELAY_FASTEST);
+        mSensorManager.registerListener(this, mOrientation, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     public void unregister() {
@@ -118,6 +149,38 @@ public class SensorReader implements SensorEventListener {
             newLine += Float.toString(lastGyroData[0]) + ", ";
             newLine += Float.toString(lastGyroData[1]) + ", ";
             newLine += Float.toString(lastGyroData[2]) + ", ";
+        }
+
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD_UNCALIBRATED)
+        {
+            newLine += Float.toString(event.values[0]) + ", ";
+            newLine += Float.toString(event.values[1]) + ", ";
+            newLine += Float.toString(event.values[2]) + ", ";
+            newLine += Float.toString(event.values[3]) + ", ";
+            newLine += Float.toString(event.values[4]) + ", ";
+            newLine += Float.toString(event.values[5]) + ", ";
+        }
+        else
+        {
+            newLine += Float.toString(lastMagData[0]) + ", ";
+            newLine += Float.toString(lastMagData[1]) + ", ";
+            newLine += Float.toString(lastMagData[2]) + ", ";
+            newLine += Float.toString(lastMagData[3]) + ", ";
+            newLine += Float.toString(lastMagData[4]) + ", ";
+            newLine += Float.toString(lastMagData[5]) + ", ";
+        }
+
+        if (event.sensor.getType() == Sensor.TYPE_ORIENTATION)
+        {
+            newLine += Float.toString(event.values[0]) + ", ";
+            newLine += Float.toString(event.values[1]) + ", ";
+            newLine += Float.toString(event.values[2]) + ", ";
+        }
+        else
+        {
+            newLine += Float.toString(lastOrientationData[0]) + ", ";
+            newLine += Float.toString(lastOrientationData[1]) + ", ";
+            newLine += Float.toString(lastOrientationData[2]) + ", ";
         }
         newLine += "\n";
 
